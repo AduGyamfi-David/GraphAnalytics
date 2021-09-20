@@ -1,6 +1,12 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from stellargraph import StellarGraph
+from stellargraph.data import BiasedRandomWalk
+
+
 
 from networkx.classes.function import nodes
 from networkx.generators import random_clustered
@@ -18,17 +24,17 @@ from networkx.generators import random_clustered
  #* Wanted to use above dataset, but had data with unfamiliar characters
  #* needed to go through data set and format text to ensure it all satisfies utf8 encoding
     #* or more specifically, the names of the users in the data set (and thus only the "strings")
+
 def main():
     G = nx.read_adjlist(r"Week5/facebook_combined.txt")
-    
 
     sG = getSampleGraph(G, int(nx.number_of_nodes(G) * 0.8))
 
     print(nx.number_of_nodes(sG))
 
+    getEmbeddings(sG, G)
 
-
-    # nx.draw(G)
+    # nx.draw_networkx(sG, pos=nx.spring_layout(sG), with_labels=False)
     # plt.show()
 
 def getSampleGraph(G, count):
@@ -63,5 +69,11 @@ def getSampleGraph(G, count):
     #* no indefinite iteration used, and finite time complexity
 
     return sample
+
+def getEmbeddings(sG, G):
+    walk = BiasedRandomWalk(G)
+    all_walks = walk.run(nodes=list(G.nodes), length=32, n=10, p=0.5, q=0.2)
+    print("Number of walks = " + str(len(all_walks)))
+
 
 main()
