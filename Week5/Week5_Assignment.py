@@ -1,13 +1,11 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from stellargraph import StellarGraph
-from stellargraph.data import BiasedRandomWalk
-
-
-
+# from stellargraph import StellarGraph
+# from stellargraph.data import BiasedRandomWalk
 from networkx.classes.function import nodes
 from networkx.generators import random_clustered
 
@@ -25,27 +23,35 @@ from networkx.generators import random_clustered
  #* needed to go through data set and format text to ensure it all satisfies utf8 encoding
     #* or more specifically, the names of the users in the data set (and thus only the "strings")
 
+def load_graph(e_path, n_path):
+    edges = pd.read_csv(e_path, ',')
+    G = nx.from_pandas_edgelist(edges, "id_1", "id_2")
+    # print(edges)
+
+
 def main():
-    G = nx.read_adjlist(r"Week5/facebook_combined.txt")
+    load_graph(r"Week5/git_edges.csv", r"git_nodes.csv")
+    return 0
+    # G = nx.read_adjlist(r"Week5/facebook_combined.txt")
 
-    sG = getSampleGraph(G, int(nx.number_of_nodes(G) * 0.8))
+    # sG = getSampleGraph(G, int(nx.number_of_nodes(G) * 0.8))
 
-    print(nx.number_of_nodes(sG))
+    # print(nx.number_of_nodes(sG))
 
-    getEmbeddings(sG, G)
+    # getEmbeddings(sG, G)
 
     # nx.draw_networkx(sG, pos=nx.spring_layout(sG), with_labels=False)
     # plt.show()
 
-def getSampleGraph(G, count):
-    sample = nx.Graph(G)
+# def getSampleGraph(G, count):
+#     sample = nx.Graph(G)
 
-    all_nodes = list(sample.nodes)
+#     all_nodes = list(sample.nodes)
 
-    node_indexes = random.sample(range(0, len(all_nodes) - 1), count)
+#     node_indexes = random.sample(range(0, len(all_nodes) - 1), count)
 
-    for i in range(0, len(node_indexes)):
-        sample.remove_node(all_nodes[node_indexes[i]])
+#     for i in range(0, len(node_indexes)):
+#         sample.remove_node(all_nodes[node_indexes[i]])
     
     # // for i in range(0, len(nx.number_of_nodes(G) * 0.8)):
         # // s = random.randint(0, nx.number_of_nodes(sample))
@@ -68,12 +74,12 @@ def getSampleGraph(G, count):
     #* then remove each node from this list 
     #* no indefinite iteration used, and finite time complexity
 
-    return sample
+    # return sample
 
-def getEmbeddings(sG, G):
-    walk = BiasedRandomWalk(G)
-    all_walks = walk.run(nodes=list(G.nodes), length=32, n=10, p=0.5, q=0.2)
-    print("Number of walks = " + str(len(all_walks)))
+# def getEmbeddings(sG, G):
+#     walk = BiasedRandomWalk(G)
+#     all_walks = walk.run(nodes=list(G.nodes), length=32, n=10, p=0.5, q=0.2)
+#     print("Number of walks = " + str(len(all_walks)))
 
-
+# if (__name__ = "__main__"):
 main()
